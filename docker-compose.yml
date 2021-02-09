@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+
+  proxy:
+    image: jwilder/nginx-proxy:alpine
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+      - ./nginx-proxy.conf:/etc/nginx/proxy.conf
+      - ./conf.d/molecular.conf:/etc/nginx/conf.d/molecular.conf
+
+networks:
+  default:
+    external:
+      name: mol-mod_default
