@@ -12,6 +12,7 @@ services:
       - ./certs:/etc/nginx/certs
       - ./nginx-proxy.conf:/etc/nginx/proxy.conf
       - ./conf.d/molecular.conf:/etc/nginx/conf.d/molecular.conf
+      - ./503.html:/usr/share/nginx/html/503.html
 
 networks:
   default:
