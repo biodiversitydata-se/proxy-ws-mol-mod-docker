@@ -16,5 +16,5 @@ services:
 
 networks:
   default:
-    external:
-      name: mol-mod_default
+    external: true
+    name: mol-mod_default
