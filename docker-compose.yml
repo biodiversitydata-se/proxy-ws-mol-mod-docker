@@ -5,8 +5,8 @@ services:
     container_name: asv-proxy
     restart: always
     labels:
-      stack: asv
-      service: asv_proxy
+      stack: mol-mod
+      service: mol-mod_proxy
     ports:
       - 8081:8081
     volumes:
@@ -24,7 +24,7 @@ services:
         loki-max-backoff: 2m
         loki-relabel-config: |
           - action: labeldrop
-            regex: "filename|container_name|compose_project|compose_service|swarm_stack|swarm_service"
+            regex: "filename|container_name|compose_project|compose_service"
 
 networks:
   default:
