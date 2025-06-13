@@ -4,6 +4,9 @@ services:
     image: nginx:1.28
     container_name: asv-proxy
     restart: always
+    labels:
+      stack: asv
+      service: asv_proxy
     ports:
       - 8081:8081
     volumes:
@@ -12,6 +15,16 @@ services:
       - ./dockerize:/usr/local/bin/dockerize
       - ./503.html:/usr/share/nginx/html/503.html
     command: dockerize -wait tcp://asv-main:5000 -timeout 60s nginx -g "daemon off;"
+    logging:
+      driver: loki
+      options:
+        labels: "stack,service"
+        loki-url: "http://10.65.2.251:3100/loki/api/v1/push"
+        loki-timeout: 5s
+        loki-max-backoff: 2m
+        loki-relabel-config: |
+          - action: labeldrop
+            regex: "filename|container_name|compose_project|compose_service|swarm_stack|swarm_service"
 
 networks:
   default:
