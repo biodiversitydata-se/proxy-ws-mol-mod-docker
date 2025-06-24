@@ -1,14 +1,30 @@
 services:
 
   proxy:
-    image: jwilder/nginx-proxy:alpine
+    image: nginx:1.28
+    container_name: asv-proxy
+    restart: always
+    labels:
+      stack: mol-mod
+      service: mol-mod_proxy
     ports:
       - 8081:8081
     volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./nginx-proxy.conf:/etc/nginx/proxy.conf
-      - ./conf.d/molecular.conf:/etc/nginx/conf.d/molecular.conf
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./conf.d:/etc/nginx/conf.d
+      - ./dockerize:/usr/local/bin/dockerize
       - ./503.html:/usr/share/nginx/html/503.html
+    command: dockerize -wait tcp://asv-main:5000 -timeout 60s nginx -g "daemon off;"
+    logging:
+      driver: loki
+      options:
+        labels: "stack,service"
+        loki-url: "http://10.65.2.251:3100/loki/api/v1/push"
+        loki-timeout: 5s
+        loki-max-backoff: 2m
+        loki-relabel-config: |
+          - action: labeldrop
+            regex: "filename|container_name|compose_project|compose_service"
 
 networks:
   default:
