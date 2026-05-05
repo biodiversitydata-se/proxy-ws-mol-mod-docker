@@ -1,7 +1,7 @@
 services:
 
   proxy:
-    image: nginx:1.28
+    image: nginx:1.30
     container_name: asv-proxy
     restart: always
     labels:
